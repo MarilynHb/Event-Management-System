@@ -101,6 +101,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Update the model used for authentication
+AUTH_USER_MODEL = 'ems.UserProfile'
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
