@@ -48,6 +48,13 @@ def dashboard(request):
     return render(request, 'ems/dashboard.html', {'profile_form': profile_form})
 
 
+def search(request):
+    return render(request, 'ems/search.html')
+
+def profile(request):
+    return render(request, 'ems/profile.html')
+
+
 def user_logout(request):
     auth.logout(request)
     return redirect("")
