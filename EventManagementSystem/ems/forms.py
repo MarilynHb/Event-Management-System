@@ -22,11 +22,24 @@ class ProfileCompletionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(ProfileCompletionForm, self).__init__(*args, **kwargs)
+        if self.user:
+            user_profile = self.user
+            self.fields['biography'].initial = self.user.biography
+            self.fields['phone'].initial = self.user.phone
+            self.fields['address'].initial = self.user.address
+            self.fields['city'].initial = self.user.city
+            self.fields['country'].initial = self.user.country
 
     def save(self, commit=True):
         instance = super(ProfileCompletionForm, self).save(commit=False)
-        instance.username = self.user  # Change user to username
-        if commit:
-            instance.save()
+        if self.user:
+            user_profile = UserProfile.objects.get(pk=self.user.pk)  # Retrieve the user's profile
+            user_profile.biography = instance.biography
+            user_profile.phone = instance.phone
+            user_profile.address = instance.address
+            user_profile.city = instance.city
+            user_profile.country = instance.country
+            if commit:
+                user_profile.save()
         return instance
 

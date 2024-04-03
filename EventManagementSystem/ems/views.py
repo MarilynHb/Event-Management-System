@@ -25,8 +25,6 @@ def my_login(request):
             username = request.POST['username']
             password = request.POST['password']
             user = authenticate(request, username=username, password=password)
-            print(user)
-            print(type(user))
             if user is not None:
                 login(request, user)
                 return redirect("dashboard")
@@ -37,11 +35,14 @@ def my_login(request):
 
 @login_required(login_url="my_login")
 def dashboard(request):
+    print(request.user)
+    print(request.user.biography)
     if request.method == 'POST':
+        print(request.POST)
         profile_form = ProfileCompletionForm(request.POST, user=request.user)
         if profile_form.is_valid():
             profile_form.save()
-            return redirect('dashboard')  # Redirect to the dashboard after saving
+            return redirect('dashboard')
     else:
         profile_form = ProfileCompletionForm(user=request.user)
    
@@ -51,9 +52,22 @@ def dashboard(request):
 def search(request):
     return render(request, 'ems/search.html')
 
+@login_required(login_url="my_login")
 def profile(request):
     return render(request, 'ems/profile.html')
 
+@login_required(login_url="my_login")
+def edit_profile(request):
+    if request.method == 'POST':
+        print(request.POST)
+        profile_form = ProfileCompletionForm(request.POST, user=request.user)
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect('profile') 
+    else:
+        profile_form = ProfileCompletionForm(user=request.user)
+    
+    return render(request, 'ems/edit_profile.html', {'profile_form': profile_form})
 
 def user_logout(request):
     auth.logout(request)

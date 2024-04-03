@@ -9,7 +9,6 @@ class UserProfile(AbstractUser):
     country = models.CharField(max_length=100)
     followers_count = models.IntegerField(default=0)
     is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
     groups = models.ManyToManyField(Group, related_name='user_profiles')
     user_permissions = models.ManyToManyField(Permission, related_name='user_profiles')
 

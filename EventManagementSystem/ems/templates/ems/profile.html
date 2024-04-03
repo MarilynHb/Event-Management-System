@@ -5,13 +5,21 @@
 {% block content %}
 <h1>Welcome to profile!</h1>
 <p>This is the profile page content.</p>
-<p>Complete Your Profile:</p>
-<!-- <form method="post" enctype="multipart/form-data">
+<p>Complete Your Profile {{ request.user.username }}:</p>
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ profile_form.as_p }}
 
-    <label for="biography">Biography:</label>
-    <p>{{profile_form.biography}}</p>
+    <label>Biography:</label>
+    {{ request.user.biography }}
+    <label>Phone:</label>
+    {{ request.user.phone }}
+    <label>Address:</label>
+    {{ request.user.address }}
+    <label>City:</label>
+    {{ request.user.city }}
+    <label>Country:</label>
+    {{ request.user.country }}
+    <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit</a>
     <button type="submit">Submit</button>
-</form> -->
+</form>
 {% endblock %}
