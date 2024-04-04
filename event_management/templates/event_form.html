@@ -6,47 +6,48 @@
     <title>{% if event %}Edit Event{% else %}Create Event{% endif %}</title>
 </head>
 <body>
+    <h1>Welcome {{ request.user.username }}</h1>
     <h1>{% if event %}Edit Event{% else %}Create Event{% endif %}</h1>
     <form method="post">
         {% csrf_token %}
         <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" value="{{ event.title if event else '' }}"><br>
+        <input type="text" id="title" name="title" value="{% if event %}{{ event.title }}{% else %}{% endif %}"><br>
         
         <label for="description">Description:</label><br>
-        <textarea id="description" name="description">{{ event.description if event else '' }}</textarea><br>
+        <textarea id="description" name="description">{% if event %}{{ event.description }}{% else %}{% endif %}</textarea><br>
         
         <label for="location">Location:</label><br>
-        <select id="location" name="location">
+        <select id="location_id" name="location_id">
             {% for location in locations %}
             <option value="{{ location.id }}">{{ location.description }}</option>
             {% endfor %}
         </select><br>
-        
+
         <label for="event_type">Event Type:</label><br>
-        <select id="event_type" name="event_type">
+        <select id="type_id" name="type_id">
             {% for event_type in event_types %}
             <option value="{{ event_type.id }}">{{ event_type.name }}</option>
             {% endfor %}
         </select><br>
         
         <label for="event_tag">Event Tag:</label><br>
-        <select id="event_tag" name="event_tag">
+        <select id="event_tag" name="tag_id">
             {% for event_tag in event_tags %}
-            <option value="{{ event_tag.id }}">{{ event_tag.description }}</option>
+            <option value="{{ event_tag.id }}" {% if event and event_tag.id == event.tag_id %}selected{% endif %}>{{ event_tag.description }}</option>
             {% endfor %}
         </select><br>
-        
+
         <label for="link">Link:</label><br>
-        <input type="url" id="link" name="link" value="{{ event.link if event else '' }}"><br>
+        <input type="url" id="link" name="link" value="{% if event %}{{ event.link }}{% else %}{% endif %}"><br>
         
         <label for="start_date">Start Date:</label><br>
-        <input type="datetime-local" id="start_date" name="start_date" value="{{ event.start_date if event else '' }}"><br>
+        <input type="datetime-local" id="start_date" name="start_date" value="{% if event %}{{ event.start_date }}{% else %}{% endif %}"><br>
         
         <label for="end_date">End Date:</label><br>
-        <input type="datetime-local" id="end_date" name="end_date" value="{{ event.end_date if event else '' }}"><br>
+        <input type="datetime-local" id="end_date" name="end_date" value="{% if event %}{{ event.end_date }}{% else %}{% endif %}"><br>
         
         <label for="likes_count">Likes Count:</label><br>
-        <input type="number" id="likes_count" name="likes_count" value="{{ event.likes_count if event else '' }}"><br>
+        <input type="number" id="likes_count" name="likes_count" value="{% if event %}{{ event.likes_count }}{% else %}{% endif %}"><br>
 
         <input type="submit" value="{% if event %}Update Event{% else %}Create Event{% endif %}">
     </form>

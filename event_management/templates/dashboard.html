@@ -3,7 +3,6 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1>Dashboard</h1>
 <h1>Welcome, {{ request.user.username }}</h1>
 <p>Complete Your Profile:</p>
 <form method="post" enctype="multipart/form-data">
@@ -11,5 +10,4 @@
     {{ profile_form.as_p }}
     <button type="submit">Submit</button>
 </form>
-<a href="{% url 'user_logout' %}">Logout</a>
 {% endblock %}

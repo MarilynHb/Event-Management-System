@@ -14,8 +14,10 @@
             <p>Description: {{ event.description }}</p>
             <p>Location: {{ event.location.description }}</p>
             <p>Type: {{ event.type.name }}</p>
+            <p>Tag: {{ event.tag.description }}</p>
             <p>Start Date: {{ event.start_date|date:"F j, Y, g:i a" }}</p>
             <p>End Date: {{ event.end_date|date:"F j, Y, g:i a" }}</p>
+            <a href="{% url 'event_edit' event.id %}">Edit</a>
         </li>
         {% empty %}
         <li>No events available.</li>

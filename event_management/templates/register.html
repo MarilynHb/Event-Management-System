@@ -1,15 +1,96 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 20px;
+            text-align: center;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 800px;
+            margin: 20px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: #fff;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .login-link {
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Register Now!</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{registerform.as_p}}
-        <input type="submit" value="Register"/>
-    </form>
+    <div class="container">
+        <h1>Register Now!</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Username:</label>
+                {{ registerform.username }}
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email address:</label>
+                {{ registerform.email }}
+            </div>
+            <div class="form-group">
+                <label for="id_password1">Password:</label>
+                {{ registerform.password1 }}
+            </div>
+            <div class="form-group">
+                <label for="id_password2">Password confirmation:</label>
+                {{ registerform.password2 }}
+            </div>
+            <input type="submit" value="Register"/>
+        </form>
+        <a href="{% url 'my_login' %}" class="login-link">Already have an account? Log in</a>
+    </div>
 </body>
 </html>
