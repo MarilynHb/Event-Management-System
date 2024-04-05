@@ -11,6 +11,7 @@
         border: 1px solid #ccc;
         border-radius: 8px;
         background-color: #fff;
+        margin-bottom: 20px;
     }
 
     .profile-form {
@@ -40,6 +41,32 @@
     .btn:hover {
         background-color: #0056b3;
     }
+
+    /* Styling for event list */
+    .event-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .event-item {
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        background-color: #f9f9f9;
+    }
+
+    .event-item h2 {
+        margin-top: 0;
+    }
+
+    .event-item p {
+        margin: 5px 0;
+    }
+
+    .event-item a {
+        margin-right: 10px;
+    }
 </style>
 
 <div class="profile-info">
@@ -68,6 +95,27 @@
             {{ request.user.country }}
         </div>
         <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'event_create' %}" class="btn btn-primary">Create Event</a>
     </form>
 </div>
+
+<h1>Event List</h1>
+<ul class="event-list">
+    {% for event in events %}
+    <li class="event-item">
+        <h2>{{ event.title }}</h2>
+        <p>Description: {{ event.description }}</p>
+        <p>Location: {{ event.location.description }}</p>
+        <p>Type: {{ event.type.name }}</p>
+        <p>Tag: {{ event.tag.description }}</p>
+        <p>Start Date: {{ event.start_date|date:"F j, Y, g:i a" }}</p>
+        <p>End Date: {{ event.end_date|date:"F j, Y, g:i a" }}</p>
+        <br><br>
+        <a href="{% url 'event_edit' event.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'event_delete' event.id %}" class="btn btn-primary">Delete</a>
+    </li>
+    {% empty %}
+    <li>No events available.</li>
+    {% endfor %}
+</ul>
 {% endblock %}

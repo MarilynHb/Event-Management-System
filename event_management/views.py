@@ -39,18 +39,9 @@ def my_login(request):
 
 @login_required(login_url="my_login")
 def dashboard(request):
-    print(request.user)
-    print(request.user.biography)
-    if request.method == 'POST':
-        print(request.POST)
-        profile_form = ProfileCompletionForm(request.POST, user=request.user)
-        if profile_form.is_valid():
-            profile_form.save()
-            return redirect('dashboard')
-    else:
-        profile_form = ProfileCompletionForm(user=request.user)
+    events = Event.objects.order_by('start_date')
    
-    return render(request, 'dashboard.html', {'profile_form': profile_form})
+    return render(request, 'dashboard.html', {'events': events})
 
 
 def search(request):
@@ -58,7 +49,8 @@ def search(request):
 
 @login_required(login_url="my_login")
 def profile(request):
-    return render(request, 'profile.html')
+    events = Event.objects.filter(created_by_id=request.user).order_by('start_date')
+    return render(request, 'profile.html', {'events': events})
 
 @login_required(login_url="my_login")
 def edit_profile(request):
@@ -86,7 +78,7 @@ def event_list(request):
 def event_delete(request, event_id):
     event = Event.objects.get(id=event_id)
     event.delete()
-    return redirect('event_list')
+    return redirect('profile')
 
 def event_create(request):
     if request.method == 'POST':
@@ -125,7 +117,7 @@ def event_create(request):
         )
 
         # Redirect to the event list page
-        return redirect('event_list')
+        return redirect('profile')
     # Fetch data for the dropdowns
     locations = Location.objects.all()
     event_types = EventType.objects.all()
@@ -156,7 +148,6 @@ def event_edit(request, event_id):
         # Convert likes_count to an integer
         likes_count = int(request.POST.get('likes_count', 0))  # Default value is 0 if not provided
 
-        # Ensure dates are in the correct format
         start_date = datetime.strptime(start_date, '%Y-%m-%dT%H:%M') if start_date else None
         end_date = datetime.strptime(end_date, '%Y-%m-%dT%H:%M') if end_date else None
 

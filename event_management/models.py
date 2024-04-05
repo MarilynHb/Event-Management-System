@@ -2,11 +2,11 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
 class UserProfile(AbstractUser):
-    biography = models.TextField(null=True)
-    phone = models.CharField(max_length=100, null=True)
-    address = models.CharField(max_length=100, null=True)
-    city = models.CharField(max_length=100,null=True)
-    country = models.CharField(max_length=100,null=True)
+    biography = models.TextField(null=True, blank=True)
+    phone = models.CharField(max_length=100, null=True, blank=True)
+    address = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, null=True, blank=True)
     followers_count = models.IntegerField(default=0)
     # groups = models.ManyToManyField(Group, related_name='user_profiles')
     # user_permissions = models.ManyToManyField(Permission, related_name='user_profiles')
@@ -43,7 +43,7 @@ class Event(models.Model):
     link = models.URLField()
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    likes_count = models.IntegerField()
+    likes_count = models.IntegerField(default=0)
     created_by_id = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, related_name='events_created')
     modified_by_id = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, related_name='events_modified')
     created_on = models.DateTimeField()
