@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 from datetime import datetime
 
-from event_management.models import EventTag, EventType, Location, Event, LikedEvents, FileLink, FileLinkType
+from event_management.models import EventTag, EventType, Location, Event, LikedEvents, FileLink, FileLinkType, ReportEvent
 from .forms import CreateUserForm, LoginForm, ProfileCompletionForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
@@ -91,6 +91,21 @@ def like_event(request, event_id):
     except LikedEvents.DoesNotExist:
         likedEvent = LikedEvents.objects.create(event_id=event, owner_id=request.user, liked_on=timezone.now())
         event.likes_count += 1
+        event.save()
+    return redirect('dashboard')
+
+@login_required(login_url="my_login")
+def report_event(request, event_id):
+    print(event_id)
+    event = Event.objects.get(id=event_id)
+    try:
+        report_event = ReportEvent.objects.get(event_id=event_id, owner_id=request.user)
+        report_event.delete()
+        event.reports_count -= 1
+        event.save()
+    except ReportEvent.DoesNotExist:
+        report_event = ReportEvent.objects.create(event_id=event, owner_id=request.user, reported_on=timezone.now())
+        event.reports_count += 1
         event.save()
     return redirect('dashboard')
 
