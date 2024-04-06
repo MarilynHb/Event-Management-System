@@ -67,39 +67,53 @@
     .event-item a {
         margin-right: 10px;
     }
+
+    .btnReport {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .btnReport:hover {
+        background-color: red;
+    }
 </style>
 
 <div class="profile-info">
     <h2>Welcome, {{ request.user.username }}</h2>
     <form method="post" enctype="multipart/form-data" class="profile-form">
         {% csrf_token %}
-
         <div class="form-group">
             <label for="id_biography">Biography:</label>
-            {{ request.user.biography }}
+            <p id="id_biography">{{ request.user.biography }}</p>
         </div>
         <div class="form-group">
             <label for="id_phone">Phone:</label>
-            {{ request.user.phone }}
+            <p id="id_phone">{{ request.user.phone }}</p>
         </div>
         <div class="form-group">
             <label for="id_address">Address:</label>
-            {{ request.user.address }}
+            <p id="id_address">{{ request.user.address }}</p>
         </div>
         <div class="form-group">
             <label for="id_city">City:</label>
-            {{ request.user.city }}
+            <p id="id_city">{{ request.user.city }}</p>
         </div>
         <div class="form-group">
             <label for="id_country">Country:</label>
-            {{ request.user.country }}
+            <p id="id_country">{{ request.user.country }}</p>
         </div>
         <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit</a>
-        <a href="{% url 'event_create' %}" class="btn btn-primary">Create Event</a>
     </form>
 </div>
-
 <h1>Event List</h1>
+<a href="{% url 'event_create' %}" class="btn btn-primary">Add Event</a>
 <ul class="event-list">
     {% for event in events %}
     <li class="event-item">
@@ -112,7 +126,7 @@
         <p>End Date: {{ event.end_date|date:"F j, Y, g:i a" }}</p>
         <br><br>
         <a href="{% url 'event_edit' event.id %}" class="btn btn-primary">Edit</a>
-        <a href="{% url 'event_delete' event.id %}" class="btn btn-primary">Delete</a>
+        <a href="{% url 'event_delete' event.id %}" class="btnReport">Delete</a>
     </li>
     {% empty %}
     <li>No events available.</li>

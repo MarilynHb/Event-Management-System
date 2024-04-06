@@ -7,6 +7,7 @@ from .forms import CreateUserForm, LoginForm, ProfileCompletionForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 def homepage(request):
 
@@ -90,7 +91,7 @@ def like_event(request, event_id):
         event.save()
     except LikedEvents.DoesNotExist:
         likedEvent = LikedEvents.objects.create(event_id=event, owner_id=request.user, liked_on=timezone.now())
-        event.likes_count += 1
+        event.likes_count +=10
         event.save()
     return redirect('dashboard')
 
@@ -237,7 +238,7 @@ def event_edit(request, event_id):
 
     return render(request, 'event_form.html', context)
 
-# To fetch data in event_form.html
+@login_required(login_url="my_login")
 def event_form(request):
     locations = Location.objects.all()
     event_types = EventType.objects.all()
@@ -251,3 +252,24 @@ def event_form(request):
     print(context)
     # Rendering the template with the data
     return render(request, 'event_form.html', context)
+
+def reports(request):
+    if not request.user.is_staff:
+        return redirect('dashboard')
+    report_counts = (
+        ReportEvent.objects
+        .values('event_id')
+        .annotate(report_count=Count('id'))
+        .order_by('-report_count')
+    )
+
+    reported_events = [
+        {
+            'event_id': report['event_id'],
+            'title': Event.objects.get(id=report['event_id']).title,
+            'report_count': report['report_count'],
+        }
+        for report in report_counts
+    ]
+
+    return render(request, 'reports.html', {'reported_events': reported_events})
