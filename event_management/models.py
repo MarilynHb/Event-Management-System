@@ -44,6 +44,7 @@ class Event(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     likes_count = models.IntegerField(default=0)
+    reports_count = models.IntegerField(default=0)
     created_by_id = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, related_name='events_created')
     modified_by_id = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, related_name='events_modified')
     created_on = models.DateTimeField()
@@ -54,6 +55,12 @@ class LikedEvents(models.Model):
     event_id = models.ForeignKey(Event, on_delete=models.DO_NOTHING)
     owner_id = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, related_name='liked_events')
     liked_on = models.DateTimeField()
+
+class ReportEvent(models.Model):
+    id = models.AutoField(primary_key=True)
+    event_id = models.ForeignKey(Event, on_delete=models.DO_NOTHING)
+    owner_id = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, related_name='report_event')
+    reported_on = models.DateTimeField()
 
 class FileLinkType(models.TextChoices):
     PROFILE_PICTURE = 'PROFILE_PICTURE', 'Profile Picture'
