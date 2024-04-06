@@ -3,13 +3,52 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1>Dashboard</h1>
-<h1>Welcome, {{ request.user.username }}</h1>
-<p>Complete Your Profile:</p>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ profile_form.as_p }}
-    <button type="submit">Submit</button>
-</form>
-<a href="{% url 'user_logout' %}">Logout</a>
+<style>
+    .dashboard-heading {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .event-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .event-item {
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .event-title {
+        margin-top: 0;
+    }
+
+    .event-info {
+        margin: 5px 0;
+    }
+</style>
+
+<h1 class="dashboard-heading">Welcome, {{ request.user.username }}</h1>
+
+<h1 class="dashboard-heading">Event List</h1>
+<ul class="event-list">
+    {% for event in events %}
+    <li class="event-item">
+        <h2 class="event-title">{{ event.title }}</h2>
+        <p class="event-info">Description: {{ event.description }}</p>
+        <p class="event-info">Location: {{ event.location.description }}</p>
+        <p class="event-info">Type: {{ event.type.name }}</p>
+        <p class="event-info">Tag: {{ event.tag.description }}</p>
+        <p class="event-info">Start Date: {{ event.start_date|date:"F j, Y, g:i a" }}</p>
+        <p class="event-info">End Date: {{ event.end_date|date:"F j, Y, g:i a" }}</p>
+    </li>
+    {% empty %}
+    <li class="event-item">No events available.</li>
+    {% endfor %}
+</ul>
+
 {% endblock %}

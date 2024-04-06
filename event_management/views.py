@@ -1,5 +1,6 @@
-from datetime import timezone
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
+from datetime import datetime
 
 from event_management.models import EventTag, EventType, Location, Event
 from .forms import CreateUserForm, LoginForm, ProfileCompletionForm
@@ -38,18 +39,9 @@ def my_login(request):
 
 @login_required(login_url="my_login")
 def dashboard(request):
-    print(request.user)
-    print(request.user.biography)
-    if request.method == 'POST':
-        print(request.POST)
-        profile_form = ProfileCompletionForm(request.POST, user=request.user)
-        if profile_form.is_valid():
-            profile_form.save()
-            return redirect('dashboard')
-    else:
-        profile_form = ProfileCompletionForm(user=request.user)
+    events = Event.objects.order_by('start_date')
    
-    return render(request, 'dashboard.html', {'profile_form': profile_form})
+    return render(request, 'dashboard.html', {'events': events})
 
 
 def search(request):
@@ -57,7 +49,8 @@ def search(request):
 
 @login_required(login_url="my_login")
 def profile(request):
-    return render(request, 'profile.html')
+    events = Event.objects.filter(created_by_id=request.user).order_by('start_date')
+    return render(request, 'profile.html', {'events': events})
 
 @login_required(login_url="my_login")
 def edit_profile(request):
@@ -76,14 +69,16 @@ def user_logout(request):
     auth.logout(request)
     return redirect("")
 
+@login_required(login_url="my_login")
 def event_list(request):
     events = Event.objects.order_by('start_date')
     return render(request, 'events.html', {'events': events})
 
+@login_required(login_url="my_login")
 def event_delete(request, event_id):
     event = Event.objects.get(id=event_id)
     event.delete()
-    return redirect('event_list')
+    return redirect('profile')
 
 def event_create(request):
     if request.method == 'POST':
@@ -97,7 +92,7 @@ def event_create(request):
         end_date = request.POST.get('end_date')
         likes_count = 0
 
-        created_by_id = request.user.userprofile
+        created_by_id = request.user
 
         modified_by_id = created_by_id
 
@@ -122,10 +117,22 @@ def event_create(request):
         )
 
         # Redirect to the event list page
-        return redirect('event_list')
+        return redirect('profile')
+    # Fetch data for the dropdowns
+    locations = Location.objects.all()
+    event_types = EventType.objects.all()
+    event_tags = EventTag.objects.all()
 
-    return render(request, 'event_form.html', {'action': 'Create'})
+    context = {
+        'locations': locations,
+        'event_types': event_types,
+        'event_tags': event_tags,
+        'action': 'Create'
+    }
 
+    return render(request, 'event_form.html', context)
+
+@login_required(login_url="my_login")
 def event_edit(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.method == 'POST':
@@ -137,9 +144,18 @@ def event_edit(request, event_id):
         link = request.POST.get('link')
         start_date = request.POST.get('start_date') 
         end_date = request.POST.get('end_date')
-        likes_count = request.POST.get('likes_count')
 
-        modified_by_id = request.user.userprofile
+        # Convert likes_count to an integer
+        likes_count = int(request.POST.get('likes_count', 0))  # Default value is 0 if not provided
+
+        start_date = datetime.strptime(start_date, '%Y-%m-%dT%H:%M') if start_date else None
+        end_date = datetime.strptime(end_date, '%Y-%m-%dT%H:%M') if end_date else None
+
+
+        print(start_date)
+        print(end_date)
+
+        modified_by_id = request.user
         modified_on = timezone.now()
 
         event.title = title
@@ -157,8 +173,20 @@ def event_edit(request, event_id):
         event.save()
 
         return redirect('event_list')
+    # Fetch data for the dropdowns
+    locations = Location.objects.all()
+    event_types = EventType.objects.all()
+    event_tags = EventTag.objects.all()
 
-    return render(request, 'event_form.html', {'action': 'Edit'})
+    context = {
+        'event': event,
+        'locations': locations,
+        'event_types': event_types,
+        'event_tags': event_tags,
+        'action': 'Edit'
+    }
+
+    return render(request, 'event_form.html', context)
 
 # To fetch data in event_form.html
 def event_form(request):
@@ -171,6 +199,6 @@ def event_form(request):
         'event_types': event_types,
         'event_tags': event_tags
     }
-
+    print(context)
     # Rendering the template with the data
     return render(request, 'event_form.html', context)

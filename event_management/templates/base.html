@@ -4,6 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Site{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #007bff;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between; /* Align items to the start and end of the container */
+            align-items: center;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 10px;
+            text-align: left;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li:last-child {
+            margin-right: 0;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav ul li a:hover {
+            color: #f0f0f0;
+        }
+        .container {
+            margin: 20px;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -11,6 +49,9 @@
             <li><a href="{% url 'dashboard' %}">Home</a></li>
             <li><a href="{% url 'search' %}">Search</a></li>
             <li><a href="{% url 'profile' %}">Profile</a></li>
+        </ul>
+        <ul>
+            <li><a href="{% url 'user_logout' %}">Logout</a></li> <!-- Logout button moved to the right -->
         </ul>
     </nav>
 
