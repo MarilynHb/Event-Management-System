@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 from datetime import datetime
 
-from event_management.models import EventTag, EventType, Location, Event
+from event_management.models import EventTag, EventType, Location, Event, LikedEvents
 from .forms import CreateUserForm, LoginForm, ProfileCompletionForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
@@ -79,6 +79,21 @@ def event_delete(request, event_id):
     event = Event.objects.get(id=event_id)
     event.delete()
     return redirect('profile')
+
+@login_required(login_url="my_login")
+def like_event(request, event_id):
+    print(event_id)
+    event = Event.objects.get(id=event_id)
+    try:
+        likedEvent = LikedEvents.objects.get(event_id=event_id, owner_id=request.user)
+        likedEvent.delete()
+        event.likes_count -= 1
+        event.save()
+    except LikedEvents.DoesNotExist:
+        likedEvent = LikedEvents.objects.create(event_id=event, owner_id=request.user, liked_on=timezone.now())
+        event.likes_count += 1
+        event.save()
+    return redirect('dashboard')
 
 def event_create(request):
     if request.method == 'POST':
