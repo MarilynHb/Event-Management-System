@@ -65,6 +65,11 @@
     {% for event in events %}
     <div class="event-item">
         <h2 class="event-title">{{ event.title }}</h2>
+        {% with event.file_links.all|first as file_link %}
+        {% if file_link %}
+        <img src="{{ file_link.file_link.url }}" alt="Event image">
+        {% endif %}
+        {% endwith %}
         <p class="event-info">Description: {{ event.description }}</p>
         <p class="event-info">Location: {{ event.location.description }}</p>
         <p class="event-info">Type: {{ event.type.name }}</p>

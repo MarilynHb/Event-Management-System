@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 from datetime import datetime
 
-from event_management.models import EventTag, EventType, Location, Event, LikedEvents
+from event_management.models import EventTag, EventType, Location, Event, LikedEvents, FileLink, FileLinkType
 from .forms import CreateUserForm, LoginForm, ProfileCompletionForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
@@ -39,8 +39,7 @@ def my_login(request):
 
 @login_required(login_url="my_login")
 def dashboard(request):
-    events = Event.objects.order_by('start_date')
-   
+    events = Event.objects.order_by('start_date').prefetch_related('file_links').all()
     return render(request, 'dashboard.html', {'events': events})
 
 
@@ -106,7 +105,6 @@ def event_create(request):
         start_date = request.POST.get('start_date') 
         end_date = request.POST.get('end_date')
         likes_count = 0
-
         created_by_id = request.user
 
         modified_by_id = created_by_id
@@ -131,6 +129,15 @@ def event_create(request):
             modified_on=modified_on
         )
 
+        image  = request.FILES.get('image')
+        if image:
+            FileLink.objects.create(
+                file_link=image,
+                link_type=FileLinkType.EVENT,
+                event=event,
+                owner=request.user,
+            )
+            
         # Redirect to the event list page
         return redirect('profile')
     # Fetch data for the dropdowns
@@ -166,7 +173,19 @@ def event_edit(request, event_id):
         start_date = datetime.strptime(start_date, '%Y-%m-%dT%H:%M') if start_date else None
         end_date = datetime.strptime(end_date, '%Y-%m-%dT%H:%M') if end_date else None
 
-
+        try:
+            image  = request.FILES.get('image')
+            if image:
+                FileLink.objects.filter(event=event).delete()
+                FileLink.objects.create(
+                    file_link=image,
+                    link_type=FileLinkType.EVENT,
+                    event=event,
+                    owner=request.user,
+                )
+        except Exception as e:
+            print(e)
+        
         print(start_date)
         print(end_date)
 
@@ -187,7 +206,7 @@ def event_edit(request, event_id):
 
         event.save()
 
-        return redirect('event_list')
+        return redirect('dashboard')
     # Fetch data for the dropdowns
     locations = Location.objects.all()
     event_types = EventType.objects.all()
