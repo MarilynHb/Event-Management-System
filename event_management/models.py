@@ -54,3 +54,18 @@ class LikedEvents(models.Model):
     event_id = models.ForeignKey(Event, on_delete=models.DO_NOTHING)
     owner_id = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, related_name='liked_events')
     liked_on = models.DateTimeField()
+
+class FileLinkType(models.TextChoices):
+    PROFILE_PICTURE = 'PROFILE_PICTURE', 'Profile Picture'
+    EVENT = 'EVENT', 'Event'
+
+class FileLink(models.Model):
+    id = models.AutoField(primary_key=True)
+    file_link = models.FileField(upload_to='uploads/')
+    link_type = models.CharField(
+        max_length=50,
+        choices=FileLinkType.choices,
+        default=FileLinkType.EVENT,
+    )
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='file_links', null=True)
+    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='file_links', null=True)

@@ -10,45 +10,81 @@
     }
 
     .event-list {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    list-style-type: none;
+    padding: 0;
+}
+.event-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 30px;
+    transition: transform 0.3s;
+}
 
-    .event-item {
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-
+.like-from{
+    width: fit-content;
+}
     .event-title {
-        margin-top: 0;
+    margin: 0;
+    color: #007bff;
+    font-size: 1.5em;
+}
+    .event-info {
+        color: #333;
+        margin: 5px 0px 10px 0px;
+    }
+    .btn {
+    align-self: end;
+    justify-self: end;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    transition: backg
     }
 
-    .event-info {
-        margin: 5px 0;
+    .btn:hover {
+        background-color: #0056b3;
     }
 </style>
 
 <h1 class="dashboard-heading">Welcome, {{ request.user.username }}</h1>
 
 <h1 class="dashboard-heading">Event List</h1>
-<ul class="event-list">
+<div class="event-list">
     {% for event in events %}
-    <li class="event-item">
+    <div class="event-item">
         <h2 class="event-title">{{ event.title }}</h2>
+        {% with event.file_links.all|first as file_link %}
+        {% if file_link %}
+        <img src="{{ file_link.file_link.url }}" alt="Event image">
+        {% endif %}
+        {% endwith %}
         <p class="event-info">Description: {{ event.description }}</p>
         <p class="event-info">Location: {{ event.location.description }}</p>
         <p class="event-info">Type: {{ event.type.name }}</p>
         <p class="event-info">Tag: {{ event.tag.description }}</p>
         <p class="event-info">Start Date: {{ event.start_date|date:"F j, Y, g:i a" }}</p>
         <p class="event-info">End Date: {{ event.end_date|date:"F j, Y, g:i a" }}</p>
-    </li>
+        <form method="post" class="like-form">
+            {% csrf_token %}
+            <input type="hidden" user="{{ user }}">
+            <a class="btn" href="{% url 'like_event' event.id %}"> {{event.likes_count}} Likes</a>
+        </form>
+    </div>
     {% empty %}
-    <li class="event-item">No events available.</li>
+    <p>No events available.</p>
     {% endfor %}
-</ul>
+</div>
 
 {% endblock %}
