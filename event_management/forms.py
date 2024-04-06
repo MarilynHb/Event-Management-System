@@ -18,6 +18,13 @@ class ProfileCompletionForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['biography', 'phone', 'address', 'city', 'country']
+        widgets = {
+            'biography': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Biography'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone'}),
+            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Address'}),
+            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City'}),
+            'country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Country'}),
+        }
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

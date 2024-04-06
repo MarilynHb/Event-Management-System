@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    </head>
+    <body>
+        {% extends 'base.html' %}
+        {% block title %}Reports{% endblock %}
+        {% block content %}
+        <style>
+            .dashboard-heading {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .event-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+                gap: 30px;
+                list-style-type: none;
+                padding: 0;
+            }
+            .event-item {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                background-color: #f9f9f9;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 30px;
+                transition: transform 0.3s;
+            }
+            .event-title {
+                margin: 0;
+                color: #007bff;
+                font-size: 1.5em;
+            }
+            .event-info {
+                color: #333;
+                margin: 10px 0px 15px 0px;
+            }
+        </style>
+        <h1 class="dashboard-heading">Reported Events</h1>
+        <div class="event-list">
+            {% for report in reported_events %}
+            <div class="event-item">
+                <h2 class="event-title">{{ report.title }}</h2>
+                <p class="event-info">Report Count: {{ report.report_count }}</p>
+            </div>
+            {% empty %}
+            <p>No reported events.</p>
+            {% endfor %}
+        </div>
+        {% endblock %}
+    </body>
+</html>

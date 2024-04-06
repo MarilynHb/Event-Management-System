@@ -86,11 +86,11 @@
         <input type="url" id="link" name="link" value="{% if event %}{{ event.link }}{% endif %}"><br>
         
         <label for="start_date">Start Date</label><br>
-        <input type="datetime-local" id="start_date" name="start_date" value="{% if event %}{{ event.start_date }}{% endif %}"><br>
-        
-        <label for="end_date">End Date</label><br>
-        <input type="datetime-local" id="end_date" name="end_date" value="{% if event %}{{ event.end_date }}{% endif %}"><br>
+        <input type="datetime-local" id="start_date" name="start_date" value="{% if event %}{{ event.start_date|date:"Y-m-d\TH:i" }}{% endif %}"><br>
 
+        <label for="end_date">End Date</label><br>
+        <input type="datetime-local" id="end_date" name="end_date" value="{% if event %}{{ event.end_date|date:"Y-m-d\TH:i" }}{% endif %}"><br>
+        
         <label for="image">Image</label><br>
         <input type="file" id="image" name="image"><br>
 

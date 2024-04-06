@@ -54,8 +54,21 @@
     <h1>Edit Your Profile</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ profile_form.as_p }}
-
+        <div class="form-group">
+            {{ profile_form.biography.label_tag }} {{ profile_form.biography }}
+        </div>
+        <div class="form-group">
+            {{ profile_form.phone.label_tag }} {{ profile_form.phone }}
+        </div>
+        <div class="form-group">
+            {{ profile_form.address.label_tag }} {{ profile_form.address }}
+        </div>
+        <div class="form-group">
+            {{ profile_form.city.label_tag }} {{ profile_form.city }}
+        </div>
+        <div class="form-group">
+            {{ profile_form.country.label_tag }} {{ profile_form.country }}
+        </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>

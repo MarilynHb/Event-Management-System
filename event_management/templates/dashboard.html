@@ -11,14 +11,14 @@
 
     .event-list {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+        gap: 30px;
         list-style-type: none;
         padding: 0;
     }
 
     .event-item {
-        position: relative; /* Relative position to allow absolute positioning for the dropdown */
+        position: relative;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -37,9 +37,15 @@
 
     .event-info {
         color: #333;
-        margin: 5px 0px 10px 0px;
+        margin: 10px 0px 15px 0px;
     }
 
+    .event-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    max-height: 200px;
+    }
     .dropdown-toggle {
         position: absolute;
         top: 10px;
@@ -88,31 +94,45 @@
         background-color: #0056b3;
     }
 
+    .btnReport {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .btnReport:hover {
+        background-color: red;
+    }
+
     .report-form {
         display: none;
         position: absolute;
         top: 35px;
         right: 0;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 20px;
-    }
-
-    .report-form a{
-        text-decoration: none;
-    }
-
-    .report-form a:hover{
-        color: red;
-        text-decoration: underline;
-    }
-
+        padding: 10px;
+        background-color: whitesmoke;
+        margin-top: 10px;
+    } 
     .event-item:hover .report-form {
         display: block;
     }
 </style>
-
+<script>
+function toggleReportButton(element) {
+    var reportForm = element.nextElementSibling;
+    if (reportForm.style.display === "none") {
+        reportForm.style.display = "block";
+    } else {
+        reportForm.style.display = "none";
+    }
+}
+</script>
 <h1 class="dashboard-heading">Welcome, {{ request.user.username }}</h1>
 
 <h1 class="dashboard-heading">Event List</h1>
@@ -120,15 +140,15 @@
     {% for event in events %}
     <div class="event-item">
         <h2 class="event-title">{{ event.title }}</h2>
-        <div class="dropdown-toggle">&#8942;</div>
-        <form method="post" class="report-form">
+        <div class="dropdown-toggle" onclick="toggleReportButton(this)">&#8942;</div>
+        <form method="post" style="display: none;" class="report-form">
             {% csrf_token %}
             <input type="hidden" user="{{ user }}">
-            <a href="{% url 'report_event' event.id %}">Report Event</a>
+            <a class="btnReport" href="{% url 'report_event' event.id %}">Report</a>
         </form>
         {% with event.file_links.all|first as file_link %}
         {% if file_link %}
-        <img src="{{ file_link.file_link.url }}" alt="Event image">
+        <img src="{{ file_link.file_link.url }}" class="event-image" alt="Event image">
         {% endif %}
         {% endwith %}
         <p class="event-info">Description: {{ event.description }}</p>
@@ -137,7 +157,7 @@
         <p class="event-info">Tag: {{ event.tag.description }}</p>
         <p class="event-info">Start Date: {{ event.start_date|date:"F j, Y, g:i a" }}</p>
         <p class="event-info">End Date: {{ event.end_date|date:"F j, Y, g:i a" }}</p>
-        <form method="post" class="like-form">
+        <form method="post">
             {% csrf_token %}
             <input type="hidden" user="{{ user }}">
             <a class="btn" href="{% url 'like_event' event.id %}"> {{event.likes_count}} Likes</a>
