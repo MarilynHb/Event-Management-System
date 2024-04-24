@@ -122,6 +122,43 @@
     .event-item:hover .report-form {
         display: block;
     }
+
+
+    .filter-form {
+        margin-bottom: 20px;
+    }
+
+    .filter-form input[type="text"],
+    .filter-form select {
+        flex: 1;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .filter-form label {
+        flex-basis: 120px; /* Adjust as needed */
+        margin-right: 10px;
+        text-align: right;
+    }
+
+    .filter-form button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .filter-form button:hover {
+        background-color: #0056b3;
+    }
 </style>
 <script>
 function toggleReportButton(element) {
@@ -134,7 +171,24 @@ function toggleReportButton(element) {
 }
 </script>
 <h1 class="dashboard-heading">Welcome, {{ request.user.username }}</h1>
-
+<form method="get" class="filter-form">
+    <label for="title">Title:</label>
+    {{ myFilter.form.title }}
+    
+    <label for="location">Location:</label>
+    {{ myFilter.form.location }}
+    
+    <label for="type">Type:</label>
+    {{ myFilter.form.type }}
+    
+    <label for="tag">Tag:</label>
+    {{ myFilter.form.tag }}
+    
+    <label for="start_date">Start Date:</label>
+    {{ myFilter.form.start_date }}
+    
+    <button type="submit">Search</button>
+</form>
 <h1 class="dashboard-heading">Event List</h1>
 <div class="event-list">
     {% for event in events %}

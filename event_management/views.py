@@ -8,6 +8,7 @@ from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from .filters import EventFilter
 
 def homepage(request):
 
@@ -41,7 +42,9 @@ def my_login(request):
 @login_required(login_url="my_login")
 def dashboard(request):
     events = Event.objects.order_by('start_date').prefetch_related('file_links').all()
-    return render(request, 'dashboard.html', {'events': events})
+    myFilter = EventFilter(request.GET, queryset = events)
+    events = myFilter.qs
+    return render(request, 'dashboard.html', {'events': events, 'myFilter' : myFilter})
 
 
 def search(request):
