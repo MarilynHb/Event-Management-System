@@ -2,13 +2,48 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 from datetime import datetime
 
-from event_management.models import EventTag, EventType, Location, Event, LikedEvents, FileLink, FileLinkType, ReportEvent
+from event_management.models import UserProfile, EventTag, EventType, Location, Event, LikedEvents, FileLink, FileLinkType, ReportEvent
 from .forms import CreateUserForm, LoginForm, ProfileCompletionForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from .filters import EventFilter
+from .serializers import *
+from rest_framework import viewsets
+from .models import *
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = UserProfile.objects.all()
+
+class LocationViewSet(viewsets.ModelViewSet):
+    serializer_class = LocationSerializer
+    queryset = Location.objects.all()
+
+class EventTypeViewSet(viewsets.ModelViewSet):
+    serializer_class = EventTypeSerializer
+    queryset = EventType.objects.all()
+
+class EventTagViewSet(viewsets.ModelViewSet):
+    serializer_class = EventTagSerializer
+    queryset = EventTag.objects.all()
+
+class EventViewSet(viewsets.ModelViewSet):
+    serializer_class = EventSerializer
+    queryset = Event.objects.all()
+
+class LikedEventsViewSet(viewsets.ModelViewSet):
+    serializer_class = LikedEventsSerializer
+    queryset = LikedEvents.objects.all()
+
+class ReportEventViewSet(viewsets.ModelViewSet):
+    serializer_class = ReportEventSerializer
+    queryset = ReportEvent.objects.all()
+
+class FileLinkViewSet(viewsets.ModelViewSet):
+    serializer_class = FileLinkSerializer
+    queryset = FileLink.objects.all()
 
 def homepage(request):
 
