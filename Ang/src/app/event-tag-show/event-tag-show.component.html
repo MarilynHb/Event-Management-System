@@ -1,0 +1,36 @@
+<p>event-tag-show works!</p>
+
+<button (click)="addClick()">Add Event Tag</button>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Description</th>
+      <th>Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let eventTag of EventTagList">
+      <td>{{ eventTag.id }}</td>
+      <td>{{ eventTag.description }}</td>
+      <td>
+        <button (click)="editClick(eventTag)">Edit</button>
+        <button (click)="deleteClick(eventTag)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="ActivateAddEditComp">
+  <h2>{{ modalTitle }}</h2>
+  <div>
+    <label>ID: </label>
+    <input [(ngModel)]="eventTag.id" disabled />
+  </div>
+  <div>
+    <label>Description: </label>
+    <input [(ngModel)]="eventTag.description" />
+  </div>
+  <button (click)="saveClick()">Save</button>
+  <button (click)="closeClick()">Close</button>
+</div>

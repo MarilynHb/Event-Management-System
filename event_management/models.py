@@ -1,6 +1,12 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
+class Industry(models.Model):
+    name = models.CharField(max_length=100)
+
+    def _str_(self):
+        return self.name
+
 class UserProfile(AbstractUser):
     biography = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=100, null=True, blank=True)

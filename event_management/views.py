@@ -1,11 +1,18 @@
+import stat
+from urllib import response
+from django.http import HttpResponseNotFound, JsonResponse
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+from rest_framework.parsers import JSONParser
+from django.http.response import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 from event_management.models import UserProfile, EventTag, EventType, Location, Event, LikedEvents, FileLink, FileLinkType, ReportEvent
 from .forms import CreateUserForm, LoginForm, ProfileCompletionForm
-from django.contrib.auth.models import auth
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from .filters import EventFilter
@@ -21,29 +28,167 @@ class LocationViewSet(viewsets.ModelViewSet):
     serializer_class = LocationSerializer
     queryset = Location.objects.all()
 
-class EventTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = EventTypeSerializer
-    queryset = EventType.objects.all()
-
-class EventTagViewSet(viewsets.ModelViewSet):
-    serializer_class = EventTagSerializer
-    queryset = EventTag.objects.all()
-
 class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
 
-class LikedEventsViewSet(viewsets.ModelViewSet):
-    serializer_class = LikedEventsSerializer
-    queryset = LikedEvents.objects.all()
+@api_view(['GET', 'POST', 'DELETE'])
+def event_list(request):
+    if request.method == 'GET':
+        events = Event.objects.all()
+        serializer = EventSerializer(events, many=True)
+        return response(serializer.data)
 
-class ReportEventViewSet(viewsets.ModelViewSet):
-    serializer_class = ReportEventSerializer
-    queryset = ReportEvent.objects.all()
+    # POST a new event
+    elif request.method == 'POST':
+        serializer = EventSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response(serializer.data, status=stat.HTTP_201_CREATED)
+        return response(serializer.errors, status=stat.HTTP_400_BAD_REQUEST)
 
-class FileLinkViewSet(viewsets.ModelViewSet):
-    serializer_class = FileLinkSerializer
-    queryset = FileLink.objects.all()
+    # DELETE all events
+    elif request.method == 'DELETE':
+        Event.objects.all().delete()
+        return response(status=stat.HTTP_204_NO_CONTENT)
+ 
+@api_view(['GET', 'PUT', 'DELETE'])
+def event_detail(request, pk):
+    # find event by pk (id)
+    try: 
+        event = Event.objects.get(pk=pk) 
+    except Event.DoesNotExist: 
+        return JsonResponse({'message': 'The event does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+ 
+    # GET event details
+    if request.method == 'GET':
+        serializer = EventSerializer(event)
+        return response(serializer.data)
+
+    # PUT update event
+    elif request.method == 'PUT':
+        serializer = EventSerializer(event, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response(serializer.data)
+        return response(serializer.errors, status=stat.HTTP_400_BAD_REQUEST)
+
+    # DELETE event
+    elif request.method == 'DELETE':
+        event.delete()
+        return response(status=stat.HTTP_204_NO_CONTENT)
+    
+
+@csrf_exempt
+def LocationApi(request, id=0):
+    if request.method == 'GET':
+        locations = Location.objects.all()
+        location_serializer = LocationSerializer(locations, many=True)
+        return JsonResponse(location_serializer.data, safe=False)
+    
+    elif request.method == 'POST':
+        location_data = JSONParser().parse(request)
+        location_serializer = LocationSerializer(data=location_data)
+        if location_serializer.is_valid():
+            location_serializer.save()
+            return JsonResponse("Added successfully!!!", safe=False)
+        return JsonResponse(location_serializer.errors, status=400)
+    
+    elif request.method == 'PUT':
+        location_data = JSONParser().parse(request)
+        try:
+            location = Location.objects.get(id=id)
+            location_serializer = LocationSerializer(location, data=location_data)
+            if location_serializer.is_valid():
+                location_serializer.save()
+                return JsonResponse("Updated successfully", safe=False)
+            return JsonResponse(location_serializer.errors, status=400)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Location not found")
+    
+    elif request.method == 'DELETE':
+        try:
+            location = Location.objects.get(id=id)
+            location.delete()
+            return JsonResponse("Deleted successfully", safe=False)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Location not found")
+
+@csrf_exempt
+def EventTypeApi(request, id=0):
+    if request.method == 'GET':
+        eventTypes = EventType.objects.all()
+        eventType_serializer = EventTypeSerializer(eventTypes, many=True)
+        return JsonResponse(eventType_serializer.data, safe=False)
+    
+    elif request.method == 'POST':
+        eventType_data = JSONParser().parse(request)
+        eventType_serializer = EventTypeSerializer(data=eventType_data)
+        if eventType_serializer.is_valid():
+            eventType_serializer.save()
+            return JsonResponse("Added successfully!!!", safe=False)
+        return JsonResponse(eventType_serializer.errors, status=400)
+    
+    elif request.method == 'PUT':
+        eventType_data = JSONParser().parse(request)
+        try:
+            eventType = EventType.objects.get(id=id)
+            eventType_serializer = EventTypeSerializer(eventType, data=eventType_data)
+            if eventType_serializer.is_valid():
+                eventType_serializer.save()
+                return JsonResponse("Updated successfully", safe=False)
+            return JsonResponse(eventType_serializer.errors, status=400)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Event Type not found")
+    
+    elif request.method == 'DELETE':
+        try:
+            eventType = EventType.objects.get(id=id)
+            eventType.delete()
+            return JsonResponse("Deleted successfully", safe=False)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Event Type not found")
+
+@csrf_exempt
+def EventTagApi(request, id=0):
+    if request.method == 'GET':
+        eventTags = EventTag.objects.all()
+        eventTag_serializer = EventTagSerializer(eventTags, many=True)
+        return JsonResponse(eventTag_serializer.data, safe=False)
+    
+    elif request.method == 'POST':
+        eventTag_data = JSONParser().parse(request)
+        eventTag_serializer = EventTagSerializer(data=eventTag_data)
+        if eventTag_serializer.is_valid():
+            eventTag_serializer.save()
+            return JsonResponse("Added successfully!!!", safe=False)
+        return JsonResponse(eventTag_serializer.errors, status=400)
+    
+    elif request.method == 'PUT':
+        eventTag_data = JSONParser().parse(request)
+        try:
+            eventTag = EventTag.objects.get(id=id)
+            eventTag_serializer = EventTagSerializer(eventTag, data=eventTag_data)
+            if eventTag_serializer.is_valid():
+                eventTag_serializer.save()
+                return JsonResponse("Updated successfully", safe=False)
+            return JsonResponse(eventTag_serializer.errors, status=400)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Event Tag not found")
+    
+    elif request.method == 'DELETE':
+        try:
+            eventTag = EventTag.objects.get(id=id)
+            eventTag.delete()
+            return JsonResponse("Deleted successfully", safe=False)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Event Tag not found")
+
+
+def delete_user(request, user_id):
+    user = get_object_or_404(UserProfile, pk=user_id)
+    user.delete()
+    return JsonResponse({'message': 'User deleted successfully'})
 
 def homepage(request):
 
@@ -107,18 +252,17 @@ def user_logout(request):
     auth.logout(request)
     return redirect("")
 
-@login_required(login_url="my_login")
 def event_list(request):
     events = Event.objects.order_by('start_date')
     return render(request, 'events.html', {'events': events})
 
-@login_required(login_url="my_login")
+
 def event_delete(request, event_id):
     event = Event.objects.get(id=event_id)
     event.delete()
     return redirect('profile')
 
-@login_required(login_url="my_login")
+
 def like_event(request, event_id):
     print(event_id)
     event = Event.objects.get(id=event_id)
@@ -133,7 +277,7 @@ def like_event(request, event_id):
         event.save()
     return redirect('dashboard')
 
-@login_required(login_url="my_login")
+
 def report_event(request, event_id):
     print(event_id)
     event = Event.objects.get(id=event_id)
@@ -208,7 +352,6 @@ def event_create(request):
 
     return render(request, 'event_form.html', context)
 
-@login_required(login_url="my_login")
 def event_edit(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.method == 'POST':
@@ -276,7 +419,6 @@ def event_edit(request, event_id):
 
     return render(request, 'event_form.html', context)
 
-@login_required(login_url="my_login")
 def event_form(request):
     locations = Location.objects.all()
     event_types = EventType.objects.all()

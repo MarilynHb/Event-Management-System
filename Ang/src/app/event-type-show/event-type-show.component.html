@@ -1,0 +1,36 @@
+<p>event-type-show works!</p>
+
+<button (click)="addClick()">Add Event Type</button>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let eventType of EventTypeList">
+      <td>{{ eventType.id }}</td>
+      <td>{{ eventType.name }}</td>
+      <td>
+        <button (click)="editClick(eventType)">Edit</button>
+        <button (click)="deleteClick(eventType)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="ActivateAddEditComp">
+  <h2>{{ modalTitle }}</h2>
+  <div>
+    <label>ID: </label>
+    <input [(ngModel)]="eventType.id" disabled />
+  </div>
+  <div>
+    <label>Name: </label>
+    <input [(ngModel)]="eventType.name" />
+  </div>
+  <button (click)="saveClick()">Save</button>
+  <button (click)="closeClick()">Close</button>
+</div>

@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from event_management.models import *
 
+class IndustrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Industry  # Specify the model associated with this serializer
+        fields = '_all_'  # Or specify the fields you want to include/exclude
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
@@ -11,6 +16,11 @@ class LocationSerializer(serializers.ModelSerializer):
         model = Location
         fields = '__all__'
 
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
+
 class EventTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventType
@@ -19,24 +29,4 @@ class EventTypeSerializer(serializers.ModelSerializer):
 class EventTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventTag
-        fields = '__all__'
-
-class EventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Event
-        fields = '__all__'
-
-class LikedEventsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LikedEvents
-        fields = '__all__'
-
-class ReportEventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReportEvent
-        fields = '__all__'
-
-class FileLinkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FileLink
         fields = '__all__'
