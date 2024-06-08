@@ -21,8 +21,8 @@
             <td>{{ event.id }}</td>
             <td>{{ event.title }}</td>
             <td>{{ event.description }}</td>
-            <td>{{ event.eventType ? event.eventType.name : '-' }}</td>
-            <td>{{ event.eventTag ? event.eventTag.description : '-' }}</td>
+            <td>{{ event.type ? event.type.name : '-' }}</td>
+            <td>{{ event.tag ? event.tag.description : '-' }}</td>
             <td>{{ event.link }}</td>
             <td>{{ event.startDate | date }}</td>
             <td>{{ event.endDate | date }}</td>
