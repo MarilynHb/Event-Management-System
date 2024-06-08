@@ -3,6 +3,7 @@ from urllib import response
 from django.http import HttpResponseNotFound, JsonResponse
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib import auth
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
@@ -20,64 +21,41 @@ from .serializers import *
 from rest_framework import viewsets
 from .models import *
 
-class UserViewSet(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
-    queryset = UserProfile.objects.all()
-
-class LocationViewSet(viewsets.ModelViewSet):
-    serializer_class = LocationSerializer
-    queryset = Location.objects.all()
-
-class EventViewSet(viewsets.ModelViewSet):
-    serializer_class = EventSerializer
-    queryset = Event.objects.all()
-
-@api_view(['GET', 'POST', 'DELETE'])
-def event_list(request):
+@csrf_exempt
+def EventApi(request, id=0):
     if request.method == 'GET':
         events = Event.objects.all()
-        serializer = EventSerializer(events, many=True)
-        return response(serializer.data)
-
-    # POST a new event
-    elif request.method == 'POST':
-        serializer = EventSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return response(serializer.data, status=stat.HTTP_201_CREATED)
-        return response(serializer.errors, status=stat.HTTP_400_BAD_REQUEST)
-
-    # DELETE all events
-    elif request.method == 'DELETE':
-        Event.objects.all().delete()
-        return response(status=stat.HTTP_204_NO_CONTENT)
- 
-@api_view(['GET', 'PUT', 'DELETE'])
-def event_detail(request, pk):
-    # find event by pk (id)
-    try: 
-        event = Event.objects.get(pk=pk) 
-    except Event.DoesNotExist: 
-        return JsonResponse({'message': 'The event does not exist'}, status=status.HTTP_404_NOT_FOUND) 
- 
-    # GET event details
-    if request.method == 'GET':
-        serializer = EventSerializer(event)
-        return response(serializer.data)
-
-    # PUT update event
-    elif request.method == 'PUT':
-        serializer = EventSerializer(event, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return response(serializer.data)
-        return response(serializer.errors, status=stat.HTTP_400_BAD_REQUEST)
-
-    # DELETE event
-    elif request.method == 'DELETE':
-        event.delete()
-        return response(status=stat.HTTP_204_NO_CONTENT)
+        event_serializer = EventSerializer(events, many=True)
+        return JsonResponse(event_serializer.data, safe=False)
     
+    elif request.method == 'POST':
+        event_data = JSONParser().parse(request)
+        event_serializer = EventSerializer(data=event_data)
+        if event_serializer.is_valid():
+            event_serializer.save()
+            return JsonResponse("Added successfully!!!", safe=False)
+        return JsonResponse(event_serializer.errors, status=400)
+    
+    elif request.method == 'PUT':
+        event_data = JSONParser().parse(request)
+        try:
+            event = Event.objects.get(id=id)
+            event_serializer = EventSerializer(event, data=event_data)
+            if event_serializer.is_valid():
+                event_serializer.save()
+                return JsonResponse("Updated successfully", safe=False)
+            return JsonResponse(event_serializer.errors, status=400)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Event not found")
+    
+    elif request.method == 'DELETE':
+        try:
+            event = Event.objects.get(id=id)
+            event.delete()
+            return JsonResponse("Deleted successfully", safe=False)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound("Event not found")
+
 
 @csrf_exempt
 def LocationApi(request, id=0):

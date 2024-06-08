@@ -7,9 +7,6 @@ from event_management.views import *
 from . import views
 
 router = DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'locations', LocationViewSet, basename='locations')
-router.register(r'events', EventViewSet, basename='events')
 
 urlpatterns = [
     path('', views.homepage, name=""),
@@ -28,14 +25,16 @@ urlpatterns = [
     path('events/<int:event_id>/like', views.like_event, name="like_event"),
     path('events/<int:event_id>/report', views.report_event, name="report_event"),
     path('events/<int:event_id>/delete', views.event_delete, name="event_delete"),
-    re_path(r'^api/events$', views.event_list, name='event_list'),
-    re_path(r'^api/events/(?P<pk>[0-9]+)$', views.event_detail, name='event_detail'),
+    # re_path(r'^api/events$', views.event_list, name='event_list'),
+    # re_path(r'^api/events/(?P<pk>[0-9]+)$', views.event_detail, name='event_detail'),
     path('location/', LocationApi, name='location-list'),
     path('location/<int:id>/', LocationApi, name='location-detail'),
     path('eventType/', EventTypeApi, name='eventType-list'),
     path('eventType/<int:id>/', EventTypeApi, name='eventType-detail'),
     path('eventTag/', EventTagApi, name='eventTag-list'),
     path('eventTag/<int:id>/', EventTagApi, name='eventTag-detail'),
+    path('event/', EventApi, name='event-list'),
+    path('event/<int:id>/', EventApi, name='event-detail'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
