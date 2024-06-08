@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { LocationShowComponent } from './location-show/location-show.component';
 import { EventTypeShowComponent } from './event-type-show/event-type-show.component';
 import { EventTagShowComponent } from './event-tag-show/event-tag-show.component';
+import { EventShowComponent } from './event-show/event-show.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { EventTagShowComponent } from './event-tag-show/event-tag-show.component
     LocationShowComponent,
     EventTypeShowComponent,
     EventTagShowComponent,
+    EventShowComponent,
   ],
   imports: [
     BrowserModule,

@@ -61,4 +61,20 @@ export class SharedService {
   deleteEventTag(id: any): Observable<any> {
     return this.http.delete(this.APIUrl + '/eventTag/' + id + '/');
   }
+
+  getEventList(): Observable<any[]> {
+    return this.http.get<any[]>(this.APIUrl + '/event/');
+  }
+
+  addEvent(val: any): Observable<any> {
+    return this.http.post(this.APIUrl + '/event/', val);
+  }
+
+  updateEvent(val: any): Observable<any> {
+    return this.http.put(this.APIUrl + '/event/' + val.id + '/', val);
+  }
+
+  deleteEvent(id: any): Observable<any> {
+    return this.http.delete(this.APIUrl + '/event/' + id + '/');
+  }
 }
