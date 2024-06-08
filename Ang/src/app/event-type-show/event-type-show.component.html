@@ -1,7 +1,9 @@
-<p>event-type-show works!</p>
+<!-- app.component.html -->
+<p>Event Type List</p>
 
-<button (click)="addClick()">Add Event Type</button>
-<table>
+<button class="btn btn-primary" (click)="addClick()">Add Event Type</button>
+
+<table class="table">
   <thead>
     <tr>
       <th>ID</th>
@@ -14,23 +16,25 @@
       <td>{{ eventType.id }}</td>
       <td>{{ eventType.name }}</td>
       <td>
-        <button (click)="editClick(eventType)">Edit</button>
-        <button (click)="deleteClick(eventType)">Delete</button>
+        <button class="btn btn-primary" (click)="editClick(eventType)">Edit</button>
+        <button class="btn btn-danger" (click)="deleteClick(eventType)">Delete</button>
       </td>
     </tr>
   </tbody>
 </table>
 
-<div *ngIf="ActivateAddEditComp">
-  <h2>{{ modalTitle }}</h2>
-  <div>
-    <label>ID: </label>
-    <input [(ngModel)]="eventType.id" disabled />
+<div *ngIf="ActivateAddEditComp" class="wrapper-modal">
+  <div *ngIf="ActivateAddEditComp" class="modals">
+    <h2>{{ modalTitle }}</h2>
+    <div>
+      <label>ID: </label>
+      <input [(ngModel)]="eventType.id" disabled />
+    </div>
+    <div>
+      <label>Name: </label>
+      <input [(ngModel)]="eventType.name" />
+    </div>
+    <button class="btn btn-primary" (click)="saveClick()">Save</button>
+    <button class="btn btn-secondary" (click)="closeClick()">Close</button>
   </div>
-  <div>
-    <label>Name: </label>
-    <input [(ngModel)]="eventType.name" />
-  </div>
-  <button (click)="saveClick()">Save</button>
-  <button (click)="closeClick()">Close</button>
 </div>

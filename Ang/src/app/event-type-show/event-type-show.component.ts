@@ -4,7 +4,7 @@ import { SharedService } from '../shared.service';
 @Component({
   selector: 'app-event-type-show',
   templateUrl: './event-type-show.component.html',
-  styleUrl: './event-type-show.component.css'
+  styleUrls: ['./event-type-show.component.css'] // Use styleUrls instead of styleUrl
 })
 export class EventTypeShowComponent implements OnInit {
   EventTypeList: any[] = [];
