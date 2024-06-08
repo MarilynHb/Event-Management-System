@@ -54,16 +54,21 @@ export class LocationShowComponent implements OnInit {
   }
 
   saveClick() {
-    if (this.location.id === 0) {
-      this.service.addLocation(this.location).subscribe(data => {
-        alert(data.toString());
-        this.closeClick();
-      });
-    } else {
-      this.service.updateLocation(this.location).subscribe(data => {
-        alert(data.toString());
-        this.closeClick();
-      });
+    if (!this.location.description || this.location.description == '') {
+      alert('Description is required!');
+    }
+    else {
+      if (this.location.id === 0) {
+        this.service.addLocation(this.location).subscribe(data => {
+          alert(data.toString());
+          this.closeClick();
+        });
+      } else {
+        this.service.updateLocation(this.location).subscribe(data => {
+          alert(data.toString());
+          this.closeClick();
+        });
+      }
     }
   }
 }

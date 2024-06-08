@@ -54,16 +54,21 @@ export class EventTypeShowComponent implements OnInit {
   }
 
   saveClick() {
-    if (this.eventType.id === 0) {
-      this.service.addEventType(this.eventType).subscribe(data => {
-        alert(data.toString());
-        this.closeClick();
-      });
-    } else {
-      this.service.updateEventType(this.eventType).subscribe(data => {
-        alert(data.toString());
-        this.closeClick();
-      });
+    if (!this.eventType.name || this.eventType.name == '') {
+      alert('Name is required!');
+    }
+    else {
+      if (this.eventType.id === 0) {
+        this.service.addEventType(this.eventType).subscribe(data => {
+          alert(data.toString());
+          this.closeClick();
+        });
+      } else {
+        this.service.updateEventType(this.eventType).subscribe(data => {
+          alert(data.toString());
+          this.closeClick();
+        });
+      }
     }
   }
 }

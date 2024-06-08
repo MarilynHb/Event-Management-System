@@ -54,16 +54,21 @@ export class EventTagShowComponent implements OnInit{
   }
 
   saveClick() {
-    if (this.eventTag.id === 0) {
-      this.service.addEventTag(this.eventTag).subscribe(data => {
-        alert(data.toString());
-        this.closeClick();
-      });
-    } else {
-      this.service.updateEventTag(this.eventTag).subscribe(data => {
-        alert(data.toString());
-        this.closeClick();
-      });
+    if (!this.eventTag.description || this.eventTag.description == '') {
+      alert('Description is required!');
+    }
+    else {
+      if (this.eventTag.id === 0) {
+          this.service.addEventTag(this.eventTag).subscribe(data => {
+            alert(data.toString());
+            this.closeClick();
+          });
+      } else {
+        this.service.updateEventTag(this.eventTag).subscribe(data => {
+          alert(data.toString());
+          this.closeClick();
+        });
+      }
     }
   }
 }
