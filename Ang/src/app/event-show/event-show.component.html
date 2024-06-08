@@ -50,6 +50,35 @@
             <label>Description: </label>
             <input class="form-control" [(ngModel)]="event.description" />
         </div>
+        <div>
+            <label>Event Type: </label>
+            <!-- Replace 'eventType' with the actual variable holding event type data -->
+            <select class="form-control" [(ngModel)]="event.type">
+                <option *ngFor="let type of EventTypes" [value]="type.id">{{ type.name }}</option>
+            </select>
+        </div>
+        <div>
+            <label>Event Tag: </label>
+            <!-- Replace 'eventTag' with the actual variable holding event tag data -->
+            <select class="form-control" [(ngModel)]="event.tag">
+                <option *ngFor="let tag of EventTags" [value]="tag.id">{{ tag.description }}</option>
+            </select>
+        </div>
+        <div>
+            <label>Location: </label>
+            <!-- Replace 'location' with the actual variable holding location data -->
+            <select class="form-control" [(ngModel)]="event.location">
+                <option *ngFor="let loc of EventLocations" [value]="loc.id">{{ loc.description }}</option>
+            </select>
+        </div>
+        <div>
+            <label>Start Date: </label>
+            <input type="date" class="form-control" [(ngModel)]="event.start_date" />
+        </div>
+        <div>
+            <label>End Date: </label>
+            <input type="date" class="form-control" [(ngModel)]="event.end_date" />
+        </div>
         
         <button class="btn btn-primary" (click)="saveClick()">Save</button>
         <button class="btn btn-secondary" (click)="closeClick()">Close</button>

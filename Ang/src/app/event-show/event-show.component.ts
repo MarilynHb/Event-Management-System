@@ -8,6 +8,9 @@ import { SharedService } from '../shared.service';
 })
 export class EventShowComponent {
   EventList: any[] = [];
+  EventTags: any[] = [];
+  EventTypes: any[] = [];
+  EventLocations: any[] = [];
   modalTitle: string = '';
   ActivateAddEditComp: boolean = false;
   event: any;
@@ -21,6 +24,15 @@ export class EventShowComponent {
   refreshIndList(): void {
     this.service.getEventList().subscribe(data => {
       this.EventList = data;
+    });
+    this.service.getETgList().subscribe(data => {
+      this.EventTags = data;
+    });
+    this.service.getETList().subscribe(data => {
+      this.EventTypes = data;
+    });
+    this.service.getIndList().subscribe(data => {
+      this.EventLocations = data;
     });
   }
 
@@ -63,6 +75,9 @@ export class EventShowComponent {
 
   saveClick() {
     if (this.event.id === 0) {
+      this.event.tag = parseFloat(this.event.tag)
+      this.event.type = parseFloat(this.event.type)
+      this.event.location = parseFloat(this.event.location)
       this.service.addEvent(this.event).subscribe(data => {
         alert(data.toString());
         this.closeClick();
