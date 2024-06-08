@@ -1,7 +1,10 @@
-<p>event-tag-show works!</p>
+<div style="display: flex; flex-direction: row; justify-content: space-between;margin-bottom: 30px; align-items: center;">
+  <p style="font-size: 22px; color: #232323; font-weight: 500;">Event Tag List</p>
 
-<button (click)="addClick()">Add Event Tag</button>
-<table>
+<button class="btn btn-primary" (click)="addClick()">Add Event Tag</button>
+</div>
+
+<table class="table">
   <thead>
     <tr>
       <th>ID</th>
@@ -14,23 +17,25 @@
       <td>{{ eventTag.id }}</td>
       <td>{{ eventTag.description }}</td>
       <td>
-        <button (click)="editClick(eventTag)">Edit</button>
-        <button (click)="deleteClick(eventTag)">Delete</button>
+        <button class="btn btn-primary" (click)="editClick(eventTag)">Edit</button>
+        <button class="btn btn-danger" style="margin-left: 15px;" (click)="deleteClick(eventTag)">Delete</button>
       </td>
     </tr>
   </tbody>
 </table>
 
-<div *ngIf="ActivateAddEditComp">
-  <h2>{{ modalTitle }}</h2>
-  <div>
-    <label>ID: </label>
-    <input [(ngModel)]="eventTag.id" disabled />
+<div *ngIf="ActivateAddEditComp" class="wrapper-modal">
+  <div *ngIf="ActivateAddEditComp" class="modals">
+    <h2>{{ modalTitle }}</h2>
+    <div>
+      <label>ID: </label>
+      <input class="form-control" [(ngModel)]="eventTag.id" disabled />
+    </div>
+    <div>
+      <label>Description: </label>
+      <input class="form-control" [(ngModel)]="eventTag.description" />
+    </div>
+    <button class="btn btn-primary" (click)="saveClick()">Save</button>
+    <button class="btn btn-secondary" (click)="closeClick()">Close</button>
   </div>
-  <div>
-    <label>Description: </label>
-    <input [(ngModel)]="eventTag.description" />
-  </div>
-  <button (click)="saveClick()">Save</button>
-  <button (click)="closeClick()">Close</button>
 </div>
