@@ -29,7 +29,7 @@
             <td>{{ event.link }}</td>
             <td>{{ event.start_date | date }}</td>
             <td>{{ event.end_date | date }}</td>
-            <td>{{ event.likes }}</td>
+            <td>{{ event.likes_count }}</td>
             <td>{{ event.location ? event.location.description : '-' }}</td>
             <td>
                 <button class="btn btn-primary" (click)="editClick(event)">Edit</button>
