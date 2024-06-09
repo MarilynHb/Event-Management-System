@@ -55,6 +55,9 @@ export class EventShowComponent {
 
   editClick(item: any) {
     this.event = item;
+    this.event.location = item.location?.id
+    this.event.tag = item.tag?.id
+    this.event.location = item.type?.id
     this.event.start_date = this.formatDate(new Date(this.event.start_date));
     this.event.end_date = this.formatDate(new Date(this.event.end_date));
     this.modalTitle = "Edit Event";
@@ -77,9 +80,21 @@ export class EventShowComponent {
 
   saveClick() {
     if (this.event.id === 0) {
-      this.event.tag = parseFloat(this.event.tag)
-      this.event.type = parseFloat(this.event.type)
-      this.event.location = parseFloat(this.event.location)
+      this.event.tag = {
+        id: parseFloat(this.event.tag),
+        description: this.EventTags.find((el) => el.id == this.event.tag)?.description
+      }
+      this.event.type = {
+        id: parseFloat(this.event.type),
+        name: this.EventTypes.find((el) => el.id == this.event.type)?.name
+      }
+      this.event.location = {
+        id: parseFloat(this.event.location),
+        description: this.EventLocations.find((el) => el.id == this.event.location)?.description
+      }
+
+      // this.event.link = ''
+
       this.service.addEvent(this.event).subscribe(data => {
         alert(data.toString());
         this.closeClick();
