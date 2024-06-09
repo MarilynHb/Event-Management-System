@@ -93,6 +93,10 @@ export class EventShowComponent {
 
     if (this.event.link == '') error = error + 'Link, '
 
+    if (!this.event.start_date) error = error + 'Start Date, '
+
+    if (!this.event.end_date) error = error + 'End Date '
+
     if (error != '') alert(error + ' fields are required!')
     else {
       this.event.tag = {
