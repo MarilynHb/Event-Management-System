@@ -53,21 +53,21 @@
         <div>
             <label>Event Type: </label>
             <!-- Replace 'eventType' with the actual variable holding event type data -->
-            <select class="form-control" [(ngModel)]="event.type">
+            <select class="form-control" [(ngModel)]="event.type.id">
                 <option *ngFor="let type of EventTypes" [value]="type.id">{{ type.name }}</option>
             </select>
         </div>
         <div>
             <label>Event Tag: </label>
             <!-- Replace 'eventTag' with the actual variable holding event tag data -->
-            <select class="form-control" [(ngModel)]="event.tag">
+            <select class="form-control" [(ngModel)]="event.tag.id">
                 <option *ngFor="let tag of EventTags" [value]="tag.id">{{ tag.description }}</option>
             </select>
         </div>
         <div>
             <label>Location: </label>
             <!-- Replace 'location' with the actual variable holding location data -->
-            <select class="form-control" [(ngModel)]="event.location">
+            <select class="form-control" [(ngModel)]="event.location.id">
                 <option *ngFor="let loc of EventLocations" [value]="loc.id">{{ loc.description }}</option>
             </select>
         </div>

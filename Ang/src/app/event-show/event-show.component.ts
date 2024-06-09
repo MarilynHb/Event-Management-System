@@ -55,6 +55,8 @@ export class EventShowComponent {
 
   editClick(item: any) {
     this.event = item;
+    this.event.start_date = this.formatDate(new Date(this.event.start_date));
+    this.event.end_date = this.formatDate(new Date(this.event.end_date));
     this.modalTitle = "Edit Event";
     this.ActivateAddEditComp = true;
   }
@@ -90,4 +92,16 @@ export class EventShowComponent {
     }
   }
 
+  formatDate(date: Date) {
+    let month = '' + (date.getMonth() + 1);
+    let day = '' + date.getDate();
+    let year = date.getFullYear();
+  
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+  
+    return [year, month, day].join('-');
+  }
 }
