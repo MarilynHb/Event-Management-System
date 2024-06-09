@@ -57,7 +57,7 @@ export class EventShowComponent {
     this.event = item;
     this.event.location = item.location?.id
     this.event.tag = item.tag?.id
-    this.event.location = item.type?.id
+    this.event.type = item.type?.id
     this.event.start_date = this.formatDate(new Date(this.event.start_date));
     this.event.end_date = this.formatDate(new Date(this.event.end_date));
     this.modalTitle = "Edit Event";
@@ -79,7 +79,22 @@ export class EventShowComponent {
   }
 
   saveClick() {
-    if (this.event.id === 0) {
+    var error = ''
+
+    if (!this.event.tag) error = 'Event, '
+
+    if (!this.event.location) error = error + 'Location, '
+
+    if (!this.event.type) error = error + 'Type, '
+
+    if (this.event.title == '') error = error + 'Title, '
+
+    if (this.event.description == '') error = error + 'Description, '
+
+    if (this.event.link == '') error = error + 'Link, '
+
+    if (error != '') alert(error + ' fields are required!')
+    else {
       this.event.tag = {
         id: parseFloat(this.event.tag),
         description: this.EventTags.find((el) => el.id == this.event.tag)?.description
@@ -93,17 +108,17 @@ export class EventShowComponent {
         description: this.EventLocations.find((el) => el.id == this.event.location)?.description
       }
 
-      // this.event.link = ''
-
-      this.service.addEvent(this.event).subscribe(data => {
-        alert(data.toString());
-        this.closeClick();
-      });
-    } else {
-      this.service.updateEvent(this.event).subscribe(data => {
-        alert(data.toString());
-        this.closeClick();
-      });
+      if (this.event.id === 0) {
+        this.service.addEvent(this.event).subscribe(data => {
+          alert(data.toString());
+          this.closeClick();
+        });
+      } else {
+        this.service.updateEvent(this.event).subscribe(data => {
+          alert(data.toString());
+          this.closeClick();
+        });
+      }
     }
   }
 
